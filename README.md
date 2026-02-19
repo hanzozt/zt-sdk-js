@@ -6,7 +6,7 @@ This repository is no longer maintained or supported as of 2021-11-11. No furthe
 ---
 
 ## Why Was This Archived?
-The Ziti SDK for JavaScript has been discontinued and will be replaced by a future `ziti-sdk-browser`.
+The Ziti SDK for JavaScript has been discontinued and will be replaced by a future `zt-sdk-browser`.
 
 ---
 

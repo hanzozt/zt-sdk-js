@@ -27,7 +27,7 @@ limitations under the License.
  const HttpBody = require('./body');
  const ZitiFormData = require('./form-data');
  const ls = require('../utils/localstorage');
- const zitiConstants = require('../constants');
+ const ztConstants = require('../constants');
  const isNull = require('lodash.isnull');
  const clone = HttpBody.clone;
  var pjson = require('../../package.json');
@@ -199,10 +199,10 @@ limitations under the License.
 	 const headers = this[INTERNALS].headers;
  
 	 // Transform all occurances of the HTTP Agent hostname back to the target hostname
-	 var replace = zitiConfig.httpAgent.self.host;
+	 var replace = ztConfig.httpAgent.self.host;
 	 var re = new RegExp(replace,"gi");
-	 parsedURL.href = parsedURL.href.replace(re, zitiConfig.httpAgent.target.host);
-	 parsedURL.search = parsedURL.search.replace(re, zitiConfig.httpAgent.target.host);
+	 parsedURL.href = parsedURL.href.replace(re, ztConfig.httpAgent.target.host);
+	 parsedURL.search = parsedURL.search.replace(re, ztConfig.httpAgent.target.host);
  
 	 // fetch step 1.3
 	 if (!headers.has('Accept')) {
@@ -257,14 +257,14 @@ limitations under the License.
 	 }
   
 	 // Obtain all Cookie KV pairs from the Ziti Cookie cache
-	 const release = await ziti._cookiemutex.acquire();
-	 let zitiCookies = await ls.getWithExpiry(zitiConstants.get().ZITI_COOKIES);
+	 const release = await zt._cookiemutex.acquire();
+	 let ztCookies = await ls.getWithExpiry(ztConstants.get().ZITI_COOKIES);
 	 release();
-	 if (!isNull(zitiCookies)) {
-		 for (const cookie in zitiCookies) {
-			 if (zitiCookies.hasOwnProperty(cookie)) {
-				 if (zitiCookies[cookie] !== 'null') {
-					 cookieObject[cookie] = zitiCookies[cookie];
+	 if (!isNull(ztCookies)) {
+		 for (const cookie in ztCookies) {
+			 if (ztCookies.hasOwnProperty(cookie)) {
+				 if (ztCookies[cookie] !== 'null') {
+					 cookieObject[cookie] = ztCookies[cookie];
 				 }
 			 }
 		 }
@@ -308,7 +308,7 @@ limitations under the License.
  
 	 // HTTP-network-or-cache fetch step 2.11
 	 if (!headers.has('User-Agent')) {
-		 headers.set('User-Agent', 'ziti-sdk-js/' + pjson.version);
+		 headers.set('User-Agent', 'zt-sdk-js/' + pjson.version);
 	 }
  
 	 // --- Disable gzip for now ---

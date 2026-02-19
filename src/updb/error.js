@@ -23,12 +23,12 @@ const isNull = require('lodash.isnull');
  */  
 exports.setMessage = (errorMessage) => {
 
-  var el = document.getElementById("ziti-identity-error") 
+  var el = document.getElementById("zt-identity-error") 
   if (!isNull(el)) { 
     if (typeof errorMessage != "undefined") { 
       el.textContent = errorMessage 
       el.style.color = "red" 
-      el = document.getElementById("ziti-identity-progress") 
+      el = document.getElementById("zt-identity-progress") 
       if (!isNull(el)) {
         el.textContent = "" 
       }
@@ -40,7 +40,7 @@ exports.setMessage = (errorMessage) => {
   
 exports.setProgress = (progressMessage) => {
 
-  var el = document.getElementById("ziti-identity-progress") 
+  var el = document.getElementById("zt-identity-progress") 
   if (!isNull(el)) { 
     if (typeof progressMessage != "undefined") { 
       el.textContent = progressMessage 

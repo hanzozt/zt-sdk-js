@@ -19,9 +19,9 @@ const localforage = require('localforage');
 
 localforage.config({
     driver      : localforage.INDEXEDDB,
-    name        : 'ziti_sdk_js',
+    name        : 'zt_sdk_js',
     version     : 1.0,
-    storeName   : 'ziti_sdk_js_db', // Should be alphanumeric, with underscores.
+    storeName   : 'zt_sdk_js_db', // Should be alphanumeric, with underscores.
     description : 'Ziti JS SDK database'
 });
 

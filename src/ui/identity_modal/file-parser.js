@@ -16,7 +16,7 @@ limitations under the License.
 
 const jwt_decode = require('jwt-decode');
 const ls = require('../../utils/localstorage');
-const zitiConstants = require('../../constants');
+const ztConstants = require('../../constants');
 
 let jwt = '';
 
@@ -79,5 +79,5 @@ function receiveFileChunk(chunk) {
  */  
 function receiveEOF() {
   let decoded_jwt = jwt_decode(jwt);
-  ls.setWithExpiry(zitiConstants.get().ZITI_JWT, jwt, decoded_jwt.exp * 1000);
+  ls.setWithExpiry(ztConstants.get().ZITI_JWT, jwt, decoded_jwt.exp * 1000);
 }

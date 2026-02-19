@@ -31,7 +31,7 @@ const Mutex           = require('async-mutex');
 
 const defaultOptions  = require('./channel-options');
 const edge_protocol   = require('./protocol');
-const zitiConstants   = require('../constants');
+const ztConstants   = require('../constants');
 const ZitiConnections = require('./connections');
 const ZitiWebSocket   = require('../websocket/websocket');
 const Header          = require('./header');
@@ -401,13 +401,13 @@ module.exports = class ZitiChannel {
 
         else if (conn.getState() == edge_protocol.conn_state.Closed || conn.getState() == edge_protocol.conn_state.Timedout) {
           this._ctx.logger.warn("received connect reply for closed/timedout conne[%d]", conn.getId());
-          // ziti_disconnect(conn);
+          // zt_disconnect(conn);
         }
         break;
 
       default:
         this._ctx.logger.error("unexpected content_type[%d] conn[%d]", contentType, conn.getId());
-        // ziti_disconnect(conn);
+        // zt_disconnect(conn);
     }
 
   }

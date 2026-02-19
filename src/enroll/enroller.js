@@ -42,7 +42,7 @@ const error                 = require('../updb/error');
 // const identityModalDragDrop = require('../ui/identity_modal/dragdrop');
 // const identityModalLogin    = require('../ui/identity_modal/login');
 // const error                 = require('../ui/identity_modal/error');
-const zitiConstants         = require('../constants');
+const ztConstants         = require('../constants');
 const ZitiControllerClient  = require('../context/controller-client');
 const {throwIf}             = require('../utils/throwif');
 const base64_url_decode     = require('./base64_url_decode');
@@ -110,7 +110,7 @@ ZitiEnroller.prototype.loadJWTFromFileSystem = async function() {
     return;
   }
 
-  // this._rawJWT = await ls.getWithExpiry(zitiConstants.get().ZITI_JWT);
+  // this._rawJWT = await ls.getWithExpiry(ztConstants.get().ZITI_JWT);
 
   // if (!isNull( this._rawJWT )) {
     // return this._rawJWT;
@@ -132,7 +132,7 @@ ZitiEnroller.prototype.loadJWTFromFileSystem = async function() {
   MicroModal.init({
     onShow: modal => console.info(`${modal.id} is shown`), // [1]
     onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-    openTrigger: 'ziti-data-micromodal-trigger', // [3]
+    openTrigger: 'zt-data-micromodal-trigger', // [3]
     closeTrigger: 'data-custom-close', // [4]
     openClass: 'is-open', // [5]
     disableScroll: true, // [6]
@@ -142,7 +142,7 @@ ZitiEnroller.prototype.loadJWTFromFileSystem = async function() {
     debugMode: false // [10]
   });
 
-  MicroModal.show('ziti-updb-modal');
+  MicroModal.show('zt-updb-modal');
 
   this._modalIsOpen = true;
   */
@@ -196,13 +196,13 @@ ZitiEnroller.prototype._awaitHaveAPISession = async function() {
     self.logger.debug('enroll._awaitHaveAPISession() starting');
 
     //
-    let apisess = await ls.getWithExpiry(zitiConstants.get().ZITI_API_SESSION_TOKEN);
+    let apisess = await ls.getWithExpiry(ztConstants.get().ZITI_API_SESSION_TOKEN);
     if (!isNull(apisess)) {
       self.ctx._apiSession = apisess;
     }
 
     let updb = new ZitiUPDB(ZitiUPDB.prototype);
-    await updb.init( { ctx: ziti._ctx, logger: ziti._ctx.logger } );
+    await updb.init( { ctx: zt._ctx, logger: zt._ctx.logger } );
   
     while (isUndefined( self.ctx._apiSession )) {
 
@@ -218,8 +218,8 @@ ZitiEnroller.prototype._awaitHaveAPISession = async function() {
 
         self._loginFormValues = undefined;
 
-        await ls.removeItem( zitiConstants.get().ZITI_IDENTITY_USERNAME );
-        await ls.removeItem( zitiConstants.get().ZITI_IDENTITY_PASSWORD );
+        await ls.removeItem( ztConstants.get().ZITI_IDENTITY_USERNAME );
+        await ls.removeItem( ztConstants.get().ZITI_IDENTITY_PASSWORD );
 
         reject(err);
 
@@ -247,8 +247,8 @@ ZitiEnroller.prototype.enroll = async function() {
 
     self.logger.debug('enroll() starting');
 
-    let publicKey = await ls.getWithExpiry(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
-    let privateKey = await ls.getWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+    let publicKey = await ls.getWithExpiry(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
+    let privateKey = await ls.getWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
 
     // If there is no keypair currently in the browZer, then something is wrong
     if (
@@ -259,7 +259,7 @@ ZitiEnroller.prototype.enroll = async function() {
     }
 
     // Don't proceed until we have successfully logged in to Controller and have established an API session
-    await ziti._ctx.ensureAPISession();
+    await zt._ctx.ensureAPISession();
     
     this._publicKey  = forge.pki.publicKeyFromPem( publicKey );
     this._privateKey = forge.pki.privateKeyFromPem( privateKey);
@@ -273,7 +273,7 @@ ZitiEnroller.prototype.enroll = async function() {
 }
 
 // ZitiEnroller.prototype._dismissModal = function() {
-  // MicroModal.close('ziti-updb-modal');
+  // MicroModal.close('zt-updb-modal');
   // this._modalIsOpen = false;
 // }
 
@@ -301,7 +301,7 @@ ZitiEnroller.prototype.getAPISession = async function( who ) {
         password: self._loginFormValues.password,
 
         configTypes: [
-          'ziti-tunneler-client.v1'
+          'zt-tunneler-client.v1'
         ],
 
         envInfo: {
@@ -311,7 +311,7 @@ ZitiEnroller.prototype.getAPISession = async function( who ) {
         sdkInfo: {
           // branch: "string",
           // revision: "string",
-          type: 'ziti-sdk-js',
+          type: 'zt-sdk-js',
           version: pjson.version
         },
       }
@@ -332,7 +332,7 @@ ZitiEnroller.prototype.getAPISession = async function( who ) {
     self.ctx._controllerClient.setApiKey(self.ctx._apiSession.token, 'zt-session', false);
 
     //
-    await ls.setWithExpiry(zitiConstants.get().ZITI_API_SESSION_TOKEN, self.ctx._apiSession, new Date(8640000000000000));
+    await ls.setWithExpiry(ztConstants.get().ZITI_API_SESSION_TOKEN, self.ctx._apiSession, new Date(8640000000000000));
 
     resolve()
 
@@ -401,7 +401,7 @@ ZitiEnroller.prototype.createEphemeralCert = async function() {
 
     self.logger.debug('controllerClient.createCurrentApiSessionCertificate returned cert with expiryTime: [%o] expiryDate:[%o]', expiryTime, expiryDate);
 
-    await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_CERT, certPEM, expiryTime);
+    await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_CERT, certPEM, expiryTime);
     
     resolve()
 
@@ -423,7 +423,7 @@ ZitiEnroller.prototype.enrollOTF = async function() {
 
     /*
     let controllerClient = new ZitiControllerClient({
-      domain: window.zitiConfig.controller.api, // set in HTML of web app that embeds ziti-sdk-js
+      domain: window.ztConfig.controller.api, // set in HTML of web app that embeds zt-sdk-js
       logger: self.logger
     });
 
@@ -444,7 +444,7 @@ ZitiEnroller.prototype.enrollOTF = async function() {
         sdkInfo: {
           // branch: "string",
           // revision: "string",
-          type: 'ziti-sdk-js',
+          type: 'zt-sdk-js',
           version: pjson.version
         },
       }
@@ -492,23 +492,23 @@ ZitiEnroller.prototype.enrollOTF = async function() {
     }
 
     let expiryTime = pkiUtil.getExpiryTimeFromCertificate(certificate);
-    await ls.setWithExpiry(zitiConstants.get().ZITI_EXPIRY_TIME, expiryTime, expiryTime);
+    await ls.setWithExpiry(ztConstants.get().ZITI_EXPIRY_TIME, expiryTime, expiryTime);
 
     self.logger.trace('controllerClient.enroll returned cert: [%o] with expiryTime: [%o]', certPEM, expiryTime);
 
     // let pk = forge.pki.privateKeyToPem(self._privateKey);
     // pk = pk.replaceAll(/\\n/g, '\n');
     // pk = pk.replaceAll('\r', '');
-    // await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY, pk, expiryTime);
+    // await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY, pk, expiryTime);
 
-    await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_CERT, certPEM, expiryTime);
+    await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_CERT, certPEM, expiryTime);
 
     // let flatca = self._certChain.replaceAll(/\\n/g, '\n');
     // flatca = flatca.replaceAll('\r', '');
-    // await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_CA, flatca, expiryTime);
+    // await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_CA, flatca, expiryTime);
 
-    // await ls.setWithExpiry(zitiConstants.get().ZITI_CONTROLLER, self._decoded_jwt.iss, expiryTime);
-    await ls.setWithExpiry(zitiConstants.get().ZITI_CONTROLLER, window.zitiConfig.controller.api, expiryTime);
+    // await ls.setWithExpiry(ztConstants.get().ZITI_CONTROLLER, self._decoded_jwt.iss, expiryTime);
+    await ls.setWithExpiry(ztConstants.get().ZITI_CONTROLLER, window.ztConfig.controller.api, expiryTime);
 
     // Get Controller protocols info
     res = await self.ctx._controllerClient.listProtocols();
@@ -519,7 +519,7 @@ ZitiEnroller.prototype.enrollOTF = async function() {
     if (isUndefined(res.data.ws.address)) {
       reject('controllerClient.listProtocols "ws" section contains no "address');
     }
-    await ls.setWithExpiry(zitiConstants.get().ZITI_CONTROLLER_WS, 'ws://' + res.data.ws.address , expiryTime);
+    await ls.setWithExpiry(ztConstants.get().ZITI_CONTROLLER_WS, 'ws://' + res.data.ws.address , expiryTime);
 
     resolve()
 
@@ -583,15 +583,15 @@ ZitiEnroller.prototype.enrollOTT = async function() {
     let pk = forge.pki.privateKeyToPem(self._privateKey);
     pk = pk.replaceAll(/\\n/g, '\n');
     pk = pk.replaceAll('\r', '');
-    ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY, pk, expiryTime);
+    ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY, pk, expiryTime);
 
-    ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_CERT, certPEM, expiryTime);
+    ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_CERT, certPEM, expiryTime);
 
     let flatca = self._certChain.replaceAll(/\\n/g, '\n');
     flatca = flatca.replaceAll('\r', '');
-    ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_CA, flatca, expiryTime);
+    ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_CA, flatca, expiryTime);
 
-    ls.setWithExpiry(zitiConstants.get().ZITI_CONTROLLER, self._decoded_jwt.iss, expiryTime);
+    ls.setWithExpiry(ztConstants.get().ZITI_CONTROLLER, self._decoded_jwt.iss, expiryTime);
 
     // Get Controller protocols info
     let res = await controllerClient.listProtocols();
@@ -602,7 +602,7 @@ ZitiEnroller.prototype.enrollOTT = async function() {
     if (isUndefined(res.data.ws.address)) {
       reject('controllerClient.listProtocols "ws" section contains no "address');
     }
-    ls.setWithExpiry(zitiConstants.get().ZITI_CONTROLLER_WS, 'ws://' + res.data.ws.address , expiryTime);
+    ls.setWithExpiry(ztConstants.get().ZITI_CONTROLLER_WS, 'ws://' + res.data.ws.address , expiryTime);
 
     resolve()
 
@@ -617,7 +617,7 @@ ZitiEnroller.prototype.enrollOTT = async function() {
  */
 ZitiEnroller.prototype.loadJWTFromLocalStorage = async function() {
 
-  this._rawJWT = await ls.getWithExpiry(zitiConstants.get().ZITI_JWT);
+  this._rawJWT = await ls.getWithExpiry(ztConstants.get().ZITI_JWT);
 
   this._decoded_jwt = jwt_decode(this._rawJWT);
   this.logger.debug('decoded JWT: %o', this._decoded_jwt);
@@ -644,7 +644,7 @@ ZitiEnroller.prototype.getWellKnownCerts = async function() {
   return new Promise( async (resolve, reject) => {
 
     let controllerClient = new ZitiControllerClient({
-      domain: window.zitiConfig.controller.api, // set in HTML of web app that embeds ziti-sdk-js
+      domain: window.ztConfig.controller.api, // set in HTML of web app that embeds zt-sdk-js
       logger: self.logger
     });
 
@@ -752,12 +752,12 @@ ZitiEnroller.prototype.generateKeyPair = async function() {
         let privatePEM = forge.pki.privateKeyToPem(self._privateKey);
         privatePEM = privatePEM.replace(/\\n/g, '\n');
         privatePEM = privatePEM.replace('\r', '');
-        await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY, privatePEM, new Date(8640000000000000));
+        await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY, privatePEM, new Date(8640000000000000));
     
         let publicPEM = forge.pki.publicKeyToPem(self._publicKey);
         publicPEM = publicPEM.replace(/\\n/g, '\n');
         publicPEM = publicPEM.replace('\r', '');
-        await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY, publicPEM, new Date(8640000000000000));    
+        await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY, publicPEM, new Date(8640000000000000));    
 
         // error.setProgress('KeyPair Generation Complete');
         console.log('KeyPair Generation Complete');

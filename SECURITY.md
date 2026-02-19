@@ -7,6 +7,6 @@ Until v1.0.0 or higher is reached, only the most recent version is supported. Af
 ## Reporting a Vulnerability
 
 If you have an issue that is not a sensitive security issue, please submit it to the GitHub issue tracker on this repository
-or if you're not sure what repository to submit it under, use the [main Hanzo ZT/ziti repository](https://github.com/hanzozt/ziti/issues).
+or if you're not sure what repository to submit it under, use the [main Hanzo ZT/zt repository](https://github.com/hanzozt/zt/issues).
 
 If you have a sensitive security issue or are unsure if it is sensitive, please email it to: security@hanzozt.org

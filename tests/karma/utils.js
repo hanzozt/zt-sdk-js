@@ -15,10 +15,10 @@ var UTILS = require('../../src/utils/utils');
     describe('util', function() {
    
         it('should parse a URL', function() {
-          var parsedUrl = UTILS.parseURL( 'https://somewhere.ziti:1234/the/path?foo=bar' );
+          var parsedUrl = UTILS.parseURL( 'https://somewhere.zt:1234/the/path?foo=bar' );
           ASSERT.equal(parsedUrl.protocol, 'https:');    
-          ASSERT.equal(parsedUrl.host, 'somewhere.ziti:1234');    
-          ASSERT.equal(parsedUrl.hostname, 'somewhere.ziti');    
+          ASSERT.equal(parsedUrl.host, 'somewhere.zt:1234');    
+          ASSERT.equal(parsedUrl.hostname, 'somewhere.zt');    
           ASSERT.equal(parsedUrl.port, 1234);    
           ASSERT.equal(parsedUrl.pathname, '/the/path');    
           ASSERT.equal(parsedUrl.search, '?foo=bar');          

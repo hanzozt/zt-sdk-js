@@ -36,7 +36,7 @@ class Sender {
    * @param {Object} extensions An object containing the negotiated extensions
    */
   constructor(socket, extensions) {
-    ziti._ctx.logger.debug('ZitiWebSocket.Sender ctor entered');
+    zt._ctx.logger.debug('ZitiWebSocket.Sender ctor entered');
 
     this._extensions = extensions || {};
     this._socket = socket;
@@ -155,7 +155,7 @@ class Sender {
    * @private
    */
   doClose(data, mask, cb) {
-    ziti._ctx.logger.info('ZitiWebSocket doClose ---> data=[%o]', data);
+    zt._ctx.logger.info('ZitiWebSocket doClose ---> data=[%o]', data);
     this.sendFrame(
       Sender.frame(data, {
         fin: true,
@@ -177,7 +177,7 @@ class Sender {
    * @public
    */
   ping(data, mask, cb) {
-    ziti._ctx.logger.debug('ZitiWebSocket.Sender ping entered, data: %s', data);
+    zt._ctx.logger.debug('ZitiWebSocket.Sender ping entered, data: %s', data);
 
     const buf = toBuffer(data);
 
@@ -185,7 +185,7 @@ class Sender {
       throw new RangeError('The data size must not be greater than 125 bytes');
     }
 
-    ziti._ctx.logger.debug('ZitiWebSocket.Sender ping this._deflating: ', this._deflating);
+    zt._ctx.logger.debug('ZitiWebSocket.Sender ping this._deflating: ', this._deflating);
 
     if (this._deflating) {
       this.enqueue([this.doPing, buf, mask, toBuffer.readOnly, cb]);
@@ -204,7 +204,7 @@ class Sender {
    * @private
    */
   doPing(data, mask, readOnly, cb) {
-    ziti._ctx.logger.info('ZitiWebSocket doPing ---> data=[%o]', data);
+    zt._ctx.logger.info('ZitiWebSocket doPing ---> data=[%o]', data);
     this.sendFrame(
       Sender.frame(data, {
         fin: true,
@@ -226,7 +226,7 @@ class Sender {
    * @public
    */
   pong(data, mask, cb) {
-    ziti._ctx.logger.info('ZitiWebSocket.Sender pong entered, dfata is: %o', data);
+    zt._ctx.logger.info('ZitiWebSocket.Sender pong entered, dfata is: %o', data);
 
     const buf = toBuffer(data);
 
@@ -251,7 +251,7 @@ class Sender {
    * @private
    */
   doPong(data, mask, readOnly, cb) {
-    ziti._ctx.logger.info('ZitiWebSocket doPong ---> data=[%o]', data);
+    zt._ctx.logger.info('ZitiWebSocket doPong ---> data=[%o]', data);
     this.sendFrame(
       Sender.frame(data, {
         fin: true,
@@ -277,8 +277,8 @@ class Sender {
    * @public
    */
   send(data, options, cb) {
-    ziti._ctx.logger.info('ZitiWebSocket.Sender send entered, options: %o', options);
-    ziti._ctx.logger.info('ZitiWebSocket send ---> data=[%o]', data);
+    zt._ctx.logger.info('ZitiWebSocket.Sender send entered, options: %o', options);
+    zt._ctx.logger.info('ZitiWebSocket send ---> data=[%o]', data);
 
     const buf = toBuffer(data);
 
@@ -342,7 +342,7 @@ class Sender {
    * @private
    */
   dispatch(data, compress, options, cb) {
-    ziti._ctx.logger.info('ZitiWebSocket dispatch ---> data=[%o]', data);
+    zt._ctx.logger.info('ZitiWebSocket dispatch ---> data=[%o]', data);
     if (!compress) {
       this.sendFrame(Sender.frame(data, options), cb);
       return;

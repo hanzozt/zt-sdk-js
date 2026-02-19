@@ -23,7 +23,7 @@ const error = require('./error');
  */  
 exports.injectButtonHandler = (cb) => {
 
-    let loginButton = document.getElementById("ziti-login-button");
+    let loginButton = document.getElementById("zt-login-button");
 
     loginButton.onclick = function(e) {
 
@@ -38,7 +38,7 @@ exports.injectButtonHandler = (cb) => {
   
 function formValidation()
 {
-  let username = document.zitilogin.username;
+  let username = document.ztlogin.username;
   var username_len = username.value.length;
   if (username_len == 0) {
     error.setMessage('ERROR: Please specify a Username');
@@ -49,7 +49,7 @@ function formValidation()
     return undefined;
   }
 
-  let password = document.zitilogin.password;
+  let password = document.ztlogin.password;
   var password_len = password.value.length;
   if (password_len == 0) {
     error.setMessage('ERROR: Please specify a Password');

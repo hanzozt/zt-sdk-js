@@ -30,10 +30,10 @@ MicroModal            = require('micromodal');
 modalMsg              = require('../ui/identity_modal/keypair_generation_msg');
 }
 
-const ZitiReporter          = require('../utils/ziti-reporter');
+const ZitiReporter          = require('../utils/zt-reporter');
 const ls                    = require('../utils/localstorage');
 const defaultOptions        = require('./options');
-const zitiConstants         = require('../constants');
+const ztConstants         = require('../constants');
 let identityModalCSS;
 let keypairModalHTML;
 if (typeof window !== 'undefined') {
@@ -121,8 +121,8 @@ ZitiPKI.prototype._haveKeypair = async function() {
 
   return new Promise( async (resolve, reject) => {
 
-    let privateKey = await ls.get(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
-    let publicKey  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
+    let privateKey = await ls.get(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+    let publicKey  = await ls.get(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
 
     if (
       isNull( privateKey ) || isUndefined( privateKey ) ||
@@ -167,7 +167,7 @@ ZitiPKI.prototype.generateKeyPair = async function() {
     //   MicroModal.init({
     //     onShow: modal => console.info(`${modal.id} is shown`), // [1]
     //     onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-    //     openTrigger: 'ziti-data-micromodal-trigger', // [3]
+    //     openTrigger: 'zt-data-micromodal-trigger', // [3]
     //     closeTrigger: 'data-custom-close', // [4]
     //     openClass: 'is-open', // [5]
     //     disableScroll: true, // [6]
@@ -177,7 +177,7 @@ ZitiPKI.prototype.generateKeyPair = async function() {
     //     debugMode: false // [10]
     //   });
     
-    //   MicroModal.show('ziti-keypair-modal');
+    //   MicroModal.show('zt-keypair-modal');
 
     //   modalMsg.setMessage('Please do not close this browser window.');
 
@@ -220,13 +220,13 @@ ZitiPKI.prototype.generateKeyPair = async function() {
         privatePEM = privatePEM.replace(/\\n/g, '\n');
         privatePEM = privatePEM.replace(/[\r]+/g, '');
         privatePEM = privatePEM.replace(/\n/g, '\x0a');
-        await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY, privatePEM, new Date(8640000000000000));
+        await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY, privatePEM, new Date(8640000000000000));
     
         let publicPEM = forge.pki.publicKeyToPem(self._publicKey);
         publicPEM = publicPEM.replace(/\\n/g, '\n');
         publicPEM = publicPEM.replace(/[\r]+/g, '');
         publicPEM = publicPEM.replace(/\n/g, '\x0a');
-        await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY, publicPEM, new Date(8640000000000000));    
+        await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY, publicPEM, new Date(8640000000000000));    
 
         endTime = performance.now();
         var timeDiff = endTime - startTime; //in ms 
@@ -240,7 +240,7 @@ ZitiPKI.prototype.generateKeyPair = async function() {
 
         //   modalMsg.setMessage('You may now REFRESH this browser window to load the application.');
 
-        //   MicroModal.close('ziti-keypair-modal');
+        //   MicroModal.close('zt-keypair-modal');
         // }
 
         resolve( true );
@@ -283,7 +283,7 @@ ZitiPKI.prototype.generateKeyPair = async function() {
         MicroModal.init({
           onShow: modal => console.info(`${modal.id} is shown`), // [1]
           onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-          openTrigger: 'ziti-data-micromodal-trigger', // [3]
+          openTrigger: 'zt-data-micromodal-trigger', // [3]
           closeTrigger: 'data-custom-close', // [4]
           openClass: 'is-open', // [5]
           disableScroll: true, // [6]
@@ -293,7 +293,7 @@ ZitiPKI.prototype.generateKeyPair = async function() {
           debugMode: false // [10]
         });
       
-        MicroModal.show('ziti-keypair-modal');
+        MicroModal.show('zt-keypair-modal');
 
         modalMsg.setMessage('Please do not close this browser window.');
 
@@ -305,7 +305,7 @@ ZitiPKI.prototype.generateKeyPair = async function() {
     (async function waitForKeyPairGenerationComplete() {
       let haveKeys = await self._haveKeypair();
       if (haveKeys) {
-        MicroModal.close('ziti-keypair-modal');
+        MicroModal.close('zt-keypair-modal');
         return resolve(true);
       }
       setTimeout(waitForKeyPairGenerationComplete, 200);

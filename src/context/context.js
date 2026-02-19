@@ -34,7 +34,7 @@ limitations under the License.
  const formatMessage         = require('format-message');
  
  let MicroModal
- if (!zitiConfig.serviceWorker.active) {
+ if (!ztConfig.serviceWorker.active) {
    MicroModal                = require('micromodal');
  }
  
@@ -43,15 +43,15 @@ limitations under the License.
  const edge_protocol         = require('../channel/protocol');
  const defaultOptions        = require('./options');
  const contextTypes          = require('./contexttypes');
- const zitiConstants         = require('../constants');
- const ZitiReporter          = require('../utils/ziti-reporter');
+ const ztConstants         = require('../constants');
+ const ZitiReporter          = require('../utils/zt-reporter');
  const ZitiControllerClient  = require('../context/controller-client');
  const ZitiUPDB              = require('../updb/updb');
  const ZitiChannel           = require('../channel/channel');
  const {throwIf}             = require('../utils/throwif');
  
  let ZitiEnroller
- if (!zitiConfig.serviceWorker.active) {
+ if (!ztConfig.serviceWorker.active) {
    ZitiEnroller              = require('../enroll/enroller');
  }
  const pjson                 = require('../../package.json');
@@ -105,7 +105,7 @@ limitations under the License.
  
      self.logger.debug('loadAPISessionToken() starting');
  
-     let apisess = await ls.getWithExpiry(zitiConstants.get().ZITI_API_SESSION_TOKEN);
+     let apisess = await ls.getWithExpiry(ztConstants.get().ZITI_API_SESSION_TOKEN);
  
      self.logger.debug('loadAPISessionToken() ZITI_API_SESSION_TOKEN is: [%o]', apisess);
  
@@ -145,8 +145,8 @@ limitations under the License.
      self.logger.debug('loadIdentity() starting');
  
      // Load Identity variables from storage
-     self._IDENTITY_CERT = await ls.getWithExpiry(zitiConstants.get().ZITI_IDENTITY_CERT);
-     self._IDENTITY_KEY  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+     self._IDENTITY_CERT = await ls.getWithExpiry(ztConstants.get().ZITI_IDENTITY_CERT);
+     self._IDENTITY_KEY  = await ls.get(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
  
      // If Identity absent/expired...
      if (! self.haveRequiredVariables(self) ) {
@@ -162,7 +162,7 @@ limitations under the License.
        await enroller.enroll().catch((e) => {
  
          self.logger.error('Enrollment failed: [%o]', e);
-         ls.removeItem(zitiConstants.get().ZITI_JWT);
+         ls.removeItem(ztConstants.get().ZITI_JWT);
          return reject('Enrollment failed');
  
        });
@@ -170,8 +170,8 @@ limitations under the License.
        self.logger.debug('enroll() completed successfully');
  
        // Now that enrollment completed successfully, reload Identity
-       self._IDENTITY_CERT = await ls.getWithExpiry(zitiConstants.get().ZITI_IDENTITY_CERT);
-       self._IDENTITY_KEY  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+       self._IDENTITY_CERT = await ls.getWithExpiry(ztConstants.get().ZITI_IDENTITY_CERT);
+       self._IDENTITY_KEY  = await ls.get(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
      }
  
      return resolve();
@@ -203,7 +203,7 @@ limitations under the License.
      (function waitForIdentityLoadComplete() {
        if (self.haveRequiredVariables(self)) {
          if (self._modalIsOpen) {
-           MicroModal.close('ziti-updb-modal');
+           MicroModal.close('zt-updb-modal');
            self._modalIsOpen = false;
          }
          return resolve();
@@ -274,7 +274,7 @@ limitations under the License.
          password: self._loginFormValues.password,
  
          configTypes: [
-           'ziti-tunneler-client.v1',
+           'zt-tunneler-client.v1',
            'intercept.v1'
          ],
  
@@ -285,7 +285,7 @@ limitations under the License.
          sdkInfo: {
            // branch: "string",
            // revision: "string",
-           type: 'ziti-sdk-js',
+           type: 'zt-sdk-js',
            version: pjson.version
          },
        }
@@ -302,7 +302,7 @@ limitations under the License.
      // Set the token header on behalf of all subsequent Controller API calls
      self._controllerClient.setApiKey(self._apiSession.token, 'zt-session', false);
  
-     await ls.setWithExpiry(zitiConstants.get().ZITI_API_SESSION_TOKEN, self._apiSession, new Date( Date.parse( self._apiSession.expiresAt )));
+     await ls.setWithExpiry(ztConstants.get().ZITI_API_SESSION_TOKEN, self._apiSession, new Date( Date.parse( self._apiSession.expiresAt )));
  
      return resolve( true );
    });
@@ -322,7 +322,7 @@ limitations under the License.
        self._controllerClient.setApiKey(self._apiSession.token, 'zt-session', false);
      }
  
-     await ls.setWithExpiry(zitiConstants.get().ZITI_API_SESSION_TOKEN, self._apiSession, new Date( Date.parse( self._apiSession.expiresAt )));
+     await ls.setWithExpiry(ztConstants.get().ZITI_API_SESSION_TOKEN, self._apiSession, new Date( Date.parse( self._apiSession.expiresAt )));
    }
  
    setTimeout(self.apiSessionHeartbeat, (1000 * 60 * 5), self );
@@ -394,8 +394,8 @@ limitations under the License.
   */
   ZitiContext.prototype.flushExpiredAPISessionData = async function() {
  
-   await ls.removeItem(zitiConstants.get().ZITI_API_SESSION_TOKEN);
-   await ls.removeItem(zitiConstants.get().ZITI_IDENTITY_CERT);
+   await ls.removeItem(ztConstants.get().ZITI_API_SESSION_TOKEN);
+   await ls.removeItem(ztConstants.get().ZITI_IDENTITY_CERT);
    this._apiSession = undefined;
  
   }
@@ -449,7 +449,7 @@ limitations under the License.
  
    return new Promise( async (resolve, reject) => {
  
-     let certExpiry = await ls.getExpiry(zitiConstants.get().ZITI_IDENTITY_CERT);
+     let certExpiry = await ls.getExpiry(ztConstants.get().ZITI_IDENTITY_CERT);
  
      if (isNull( certExpiry )) {
  
@@ -514,7 +514,7 @@ limitations under the License.
      });
      self.logger.wrapConsole();
  
-     let domain = window.zitiConfig.controller.api;
+     let domain = window.ztConfig.controller.api;
      
      self._controllerClient = new ZitiControllerClient({
        domain: domain,
@@ -526,10 +526,10 @@ limitations under the License.
      // self._controllerVersion = res.data;
      // self.logger.info('init Controller Version: [%o]', self._controllerVersion);
  
-     self._timeout = zitiConstants.get().ZITI_DEFAULT_TIMEOUT;
+     self._timeout = ztConstants.get().ZITI_DEFAULT_TIMEOUT;
  
      self._network_sessions = new Map();
-     let network_sessions = await ls.getWithExpiry(zitiConstants.get().ZITI_NETWORK_SESSIONS);
+     let network_sessions = await ls.getWithExpiry(ztConstants.get().ZITI_NETWORK_SESSIONS);
      if (!isNull(network_sessions)) {
        self._network_sessions = network_sessions;
      }
@@ -539,9 +539,9 @@ limitations under the License.
      self._connSeq = 0;
  
      self._loginFormValues = {};
-     self._loginFormValues.username = await ls.getWithExpiry( zitiConstants.get().ZITI_IDENTITY_USERNAME );
+     self._loginFormValues.username = await ls.getWithExpiry( ztConstants.get().ZITI_IDENTITY_USERNAME );
      self.logger.info('ZITI_IDENTITY_USERNAME: [%o]', self._loginFormValues.username);
-     self._loginFormValues.password = await ls.getWithExpiry( zitiConstants.get().ZITI_IDENTITY_PASSWORD );
+     self._loginFormValues.password = await ls.getWithExpiry( ztConstants.get().ZITI_IDENTITY_PASSWORD );
      self.logger.info('ZITI_IDENTITY_PASSWORD: [%o]', self._loginFormValues.password);
  
      self._mutex = new Mutex.Mutex();
@@ -549,7 +549,7 @@ limitations under the License.
  
      await self.loadAPISessionToken(self);
  
-     let services = await ls.getWithExpiry(zitiConstants.get().ZITI_SERVICES);
+     let services = await ls.getWithExpiry(ztConstants.get().ZITI_SERVICES);
      if (!isNull(services)) {
        self._services = services;
      }
@@ -594,7 +594,7 @@ limitations under the License.
        }
      })
  
-     let domain = zitiConfig.controller.api;
+     let domain = ztConfig.controller.api;
      
      self._controllerClient = new ZitiControllerClient({
        domain: domain,
@@ -606,10 +606,10 @@ limitations under the License.
      // self._controllerVersion = res.data;
      // self.logger.info('initFromServiceWorker Controller Version: [%o]', self._controllerVersion);
  
-     self._timeout = zitiConstants.get().ZITI_DEFAULT_TIMEOUT;
+     self._timeout = ztConstants.get().ZITI_DEFAULT_TIMEOUT;
  
      self._network_sessions = new Map();
-     let network_sessions = await ls.getWithExpiry(zitiConstants.get().ZITI_NETWORK_SESSIONS);
+     let network_sessions = await ls.getWithExpiry(ztConstants.get().ZITI_NETWORK_SESSIONS);
      if (!isNull(network_sessions)) {
        self._network_sessions = network_sessions;
      }
@@ -619,9 +619,9 @@ limitations under the License.
      self._connSeq = 0;
  
      self._loginFormValues = {};
-     self._loginFormValues.username = await ls.getWithExpiry( zitiConstants.get().ZITI_IDENTITY_USERNAME );
+     self._loginFormValues.username = await ls.getWithExpiry( ztConstants.get().ZITI_IDENTITY_USERNAME );
      self.logger.info('ZITI_IDENTITY_USERNAME: [%o]', self._loginFormValues.username);
-     self._loginFormValues.password = await ls.getWithExpiry( zitiConstants.get().ZITI_IDENTITY_PASSWORD );
+     self._loginFormValues.password = await ls.getWithExpiry( ztConstants.get().ZITI_IDENTITY_PASSWORD );
      self.logger.info('ZITI_IDENTITY_PASSWORD: [%o]', self._loginFormValues.password);
  
      self._mutex = new Mutex.Mutex();
@@ -629,7 +629,7 @@ limitations under the License.
  
      await self.loadAPISessionToken(self);
  
-     let services = await ls.getWithExpiry(zitiConstants.get().ZITI_SERVICES);
+     let services = await ls.getWithExpiry(ztConstants.get().ZITI_SERVICES);
      if (!isNull(services)) {
        self._services = services;
      }
@@ -673,7 +673,7 @@ limitations under the License.
      self._services = res.data;
      self.logger.debug('List of available Services acquired: [%o]', self._services);
  
-     await ls.setWithExpiry(zitiConstants.get().ZITI_SERVICES, self._services, await ls.getWithExpiry(zitiConstants.get().ZITI_EXPIRY_TIME) );
+     await ls.setWithExpiry(ztConstants.get().ZITI_SERVICES, self._services, await ls.getWithExpiry(ztConstants.get().ZITI_EXPIRY_TIME) );
  
      resolve();
  
@@ -683,8 +683,8 @@ limitations under the License.
  
  /**
  "config": {
-   "ziti-tunneler-client.v1": {
-       "ziti-tunneler-client.v1": {
+   "zt-tunneler-client.v1": {
+       "zt-tunneler-client.v1": {
          "hostname": "example.com",
          "port": 443
        }
@@ -763,7 +763,7 @@ limitations under the License.
  
      let serviceName = result(find(self._services, function(obj) {
  
-       if (self._getMatchConfigTunnelerClientV1( obj.config['ziti-tunneler-client.v1'], hostname, port )) {
+       if (self._getMatchConfigTunnelerClientV1( obj.config['zt-tunneler-client.v1'], hostname, port )) {
          return true;
        }
  
@@ -832,8 +832,8 @@ limitations under the License.
  
        self.logger.debug('ctx.connect invoked with undefined networkSession');  
  
-       ls.removeItem(zitiConstants.get().ZITI_API_SESSION_TOKEN);
-       ls.removeItem(zitiConstants.get().ZITI_IDENTITY_CERT);
+       ls.removeItem(ztConstants.get().ZITI_API_SESSION_TOKEN);
+       ls.removeItem(ztConstants.get().ZITI_IDENTITY_CERT);
  
        if (self.contextType == contextTypes.ServiceWorkerType) {
          return reject( 'service worker cannot perform identity load; must be done from client' );
@@ -890,7 +890,7 @@ limitations under the License.
        self.logger.debug('contextType[%d] releasing _connectMutex for conn[%o]', self.contextType, conn.getId());
      })
      .catch(( err ) => {
-       ziti._ctx.logger.error('contextType[%d] failed to acquire _connectMutex for conn[%o]: %o', self.contextType, conn.getId(), err);
+       zt._ctx.logger.error('contextType[%d] failed to acquire _connectMutex for conn[%o]: %o', self.contextType, conn.getId(), err);
        reject( err );
      });
  
@@ -977,7 +977,7 @@ limitations under the License.
      }
    }
  
-   let corsHostsArray = zitiConfig.httpAgent.corsProxy.hosts.split(',');
+   let corsHostsArray = ztConfig.httpAgent.corsProxy.hosts.split(',');
  
    return new Promise( async (resolve, reject) => {
      let routeOverCORSProxy = false;
@@ -1011,7 +1011,7 @@ limitations under the License.
      }
    }
  
-   let corsHostsArray = zitiConfig.httpAgent.domProxy.hosts.split(',');
+   let corsHostsArray = ztConfig.httpAgent.domProxy.hosts.split(',');
  
    return new Promise( async (resolve, reject) => {
      let routeOverCORSProxy = false;
@@ -1250,7 +1250,7 @@ limitations under the License.
    
        self._network_sessions.set(serviceID, network_session);
  
-       await ls.setWithExpiry(zitiConstants.get().ZITI_NETWORK_SESSIONS, self._network_sessions, await ls.getWithExpiry(zitiConstants.get().ZITI_EXPIRY_TIME) );
+       await ls.setWithExpiry(ztConstants.get().ZITI_NETWORK_SESSIONS, self._network_sessions, await ls.getWithExpiry(ztConstants.get().ZITI_EXPIRY_TIME) );
      }
      
      release();

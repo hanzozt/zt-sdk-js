@@ -23,7 +23,7 @@ const flatOptions     = require('flat-options');
 const ls              = require('../utils/localstorage');
 const defaultOptions  = require('./tls-connection-options');
 const utils           = require('../utils/utils');
-const zitiConstants   = require('../constants');
+const ztConstants   = require('../constants');
 const forge           = require('node-forge');
 const ab2str          = require('arraybuffer-to-string');
 const isUndefined     = require('lodash.isundefined');
@@ -71,8 +71,8 @@ module.exports = class ZitiTLSConnection {
 
     return new Promise( async (resolve, reject) => {
 
-      this._clientCertPEM       = await ls.getWithExpiry(zitiConstants.get().ZITI_IDENTITY_CERT);
-      this._clientPrivateKeyPEM = await ls.getWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+      this._clientCertPEM       = await ls.getWithExpiry(ztConstants.get().ZITI_IDENTITY_CERT);
+      this._clientPrivateKeyPEM = await ls.getWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
 
       if (
         isUndefined(this._clientCertPEM) ||

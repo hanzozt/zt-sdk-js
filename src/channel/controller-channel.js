@@ -29,7 +29,7 @@ const sodium          = require('libsodium-wrappers');
 
 const defaultOptions  = require('./controller-channel-options');
 const edge_protocol   = require('./protocol');
-const zitiConstants   = require('../constants');
+const ztConstants   = require('../constants');
 const ZitiConnections = require('./connections');
 const ZitiWebSocket   = require('../websocket/websocket');
 const Header          = require('./header');

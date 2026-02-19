@@ -1,5 +1,5 @@
 var assert = require('assert');
-var ziti = require('../../src/index');
+var zt = require('../../src/index');
 
 require('../mock-localstorage');
 
@@ -10,30 +10,30 @@ require('../mock-localstorage');
   describe('client', function() {
 
     it('undefined context should fail', () => {
-      assert.notEqual(ziti, undefined);
+      assert.notEqual(zt, undefined);
       assert.throws(function () {
-        ziti.newConnection(undefined, null);
+        zt.newConnection(undefined, null);
       }, /^TypeError: Specified context is undefined.$/);
     
       
     });
 
     it('null context should fail', () => {
-      assert.notEqual(ziti, undefined);
+      assert.notEqual(zt, undefined);
       assert.throws(function () {
-        ziti.newConnection(null, null);
+        zt.newConnection(null, null);
       }, /^TypeError: Specified context is null.$/);
     });
 
-    it('ziti.init should succeed', async () => {
-      let ctx = await ziti.init();
+    it('zt.init should succeed', async () => {
+      let ctx = await zt.init();
       assert.notEqual(ctx, undefined);
     });
 
-    it('ziti.init should succeed', async () => {
-      let ctx = await ziti.init();
+    it('zt.init should succeed', async () => {
+      let ctx = await zt.init();
       assert.notEqual(ctx, undefined);
-      let conn = ziti.newConnection(ctx, null);
+      let conn = zt.newConnection(ctx, null);
       assert.notEqual(conn, undefined);
       // console.log('conn is: ', conn);
     });

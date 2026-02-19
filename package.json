@@ -1,5 +1,5 @@
 {
-  "name": "@hanzozt/ziti-sdk-js",
+  "name": "@hanzozt/zt-sdk-js",
   "version": "0.15.4",
   "description": "A JavaScript-based SDK for delivering secure browser-based web applications over a Ziti Network",
   "scripts": {
@@ -7,12 +7,12 @@
     "test-karma": "karma start",
     "coverage": "rm -rf coverage && nyc --reporter=lcov --reporter=text-summary npm test",
     "coverage-report": "nyc report",
-    "browserify": "browserify src/node/index.js -o dist/ziti.js -s ziti",
+    "browserify": "browserify src/node/index.js -o dist/zt.js -s zt",
     "build": "npm run build:clean && npm run build:lib && npm run build:dist",
     "build:clean": "rimraf lib dist",
     "build:lib": "babel --config-file ./.lib.babelrc src --out-dir lib",
     "build:dist": "npm run browserify && npm run minify",
-    "minify": "terser --compress --mangle -o dist/ziti.min.js dist/ziti.js"
+    "minify": "terser --compress --mangle -o dist/zt.min.js dist/zt.js"
   },
   "nyc": {
     "exclude": [
@@ -21,10 +21,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hanzozt/ziti-sdk-js.git"
+    "url": "git+https://github.com/hanzozt/zt-sdk-js.git"
   },
   "keywords": [
-    "ziti",
+    "zt",
     "js",
     "javascript",
     "browser"
@@ -32,9 +32,9 @@
   "author": "NetFoundry",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/hanzozt/ziti-sdk-js/issues"
+    "url": "https://github.com/hanzozt/zt-sdk-js/issues"
   },
-  "homepage": "https://github.com/hanzozt/ziti-sdk-js#readme",
+  "homepage": "https://github.com/hanzozt/zt-sdk-js#readme",
   "lint-staged": {
     "linters": {
       "*.js": [
@@ -51,9 +51,9 @@
       ]
     }
   },
-  "main": "./dist/ziti.js",
+  "main": "./dist/zt.js",
   "browser": {
-    "./dist/ziti.js": "./dist/ziti.js",
+    "./dist/zt.js": "./dist/zt.js",
     "./src/node/index.js": "./src/index.js"
   },
   "devDependencies": {

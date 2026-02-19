@@ -29,7 +29,7 @@ const {
 } = require('./_http_common');
 
 const { OutgoingMessage } = require('./_http_outgoing');
-const ZitiAgent = require('./ziti-agent');
+const ZitiAgent = require('./zt-agent');
 const { Buffer } = require('buffer');
 const searchParamsSymbol = Symbol('search');
 const { kOutHeaders, kNeedDrain } = require('./internal/http');

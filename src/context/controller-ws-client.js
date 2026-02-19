@@ -37,7 +37,7 @@ let ZitiControllerWSClient = (function() {
         this._ctx = options.ctx;
 
         let domain = (typeof options === 'object') ? options.domain : options;
-        this.domain = domain ? domain : 'ws://demo.ziti.dev/ws';
+        this.domain = domain ? domain : 'ws://demo.zt.dev/ws';
         if (this.domain.length === 0) {
             throw new Error('Domain parameter must be specified as a string.');
         }

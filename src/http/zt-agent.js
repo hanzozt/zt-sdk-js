@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 var url = require('url');
-const ZitiSocket = require('./ziti-socket');
+const ZitiSocket = require('./zt-socket');
 
 /**
  * Module exports.

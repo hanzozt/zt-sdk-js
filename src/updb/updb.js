@@ -36,10 +36,10 @@ identityModalKeypairDirectory    = require('./keypairDirectory');
 error                 = require('./error');
 }
 
-const ZitiReporter          = require('../utils/ziti-reporter');
+const ZitiReporter          = require('../utils/zt-reporter');
 const ls                    = require('../utils/localstorage');
 const defaultOptions        = require('./options');
-const zitiConstants         = require('../constants');
+const ztConstants         = require('../constants');
 let identityModalCSS;
 let updbModalHTML;
 let updbKeypairDirectoryModalHTML;
@@ -130,8 +130,8 @@ ZitiUPDB.prototype._haveCreds = async function() {
 
   return new Promise( async (resolve, reject) => {
 
-    let username = await ls.get(zitiConstants.get().ZITI_IDENTITY_USERNAME);
-    let password  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PASSWORD);
+    let username = await ls.get(ztConstants.get().ZITI_IDENTITY_USERNAME);
+    let password  = await ls.get(ztConstants.get().ZITI_IDENTITY_PASSWORD);
 
     if (
       isNull( username ) || isUndefined( username ) ||
@@ -154,8 +154,8 @@ ZitiUPDB.prototype._haveKeypair = async function() {
   return new Promise( async (resolve, reject) => {
 
     // Obtain the keypair from IndexedDb
-    let publicKey  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
-    let privateKey = await ls.get(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+    let publicKey  = await ls.get(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
+    let privateKey = await ls.get(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
 
     if (
       isNull( publicKey ) || isUndefined( publicKey ) ||
@@ -197,18 +197,18 @@ ZitiUPDB.prototype.promptForCreds = async function() {
       // Save the username/password, but ensure it vanishes in 5 minutes
       let expiry = new Date();
       expiry.setMinutes(expiry.getMinutes()+5);
-      await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_USERNAME, self._loginFormValues.username, expiry );
-      await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PASSWORD, self._loginFormValues.password, expiry );
+      await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_USERNAME, self._loginFormValues.username, expiry );
+      await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PASSWORD, self._loginFormValues.password, expiry );
 
       // if we're restarting with updb, then purge any existing API session & cert
-      await ls.removeItem( zitiConstants.get().ZITI_API_SESSION_TOKEN );
-      await ls.removeItem( zitiConstants.get().ZITI_CLIENT_CERT_PEM );  
+      await ls.removeItem( ztConstants.get().ZITI_API_SESSION_TOKEN );
+      await ls.removeItem( ztConstants.get().ZITI_CLIENT_CERT_PEM );  
     });
   
     MicroModal.init({
       onShow: modal => console.info(`${modal.id} is shown`), // [1]
       onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-      openTrigger: 'ziti-data-micromodal-trigger', // [3]
+      openTrigger: 'zt-data-micromodal-trigger', // [3]
       closeTrigger: 'data-custom-close', // [4]
       openClass: 'is-open', // [5]
       disableScroll: true, // [6]
@@ -218,7 +218,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
       debugMode: false // [10]
     });
   
-    MicroModal.show('ziti-updb-modal');
+    MicroModal.show('zt-updb-modal');
 
     self.modalShown = true;
   }
@@ -235,9 +235,9 @@ ZitiUPDB.prototype.promptForCreds = async function() {
 
   let self = this;
   let text;
-  if (source === zitiConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_FS) {
+  if (source === ztConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_FS) {
     text = 'Select Folder for Keypair storage.';
-  } else if (source === zitiConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_IDB) {
+  } else if (source === ztConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_IDB) {
     text = 'New KeyPair generation is complete.<br/><br/>Select Folder to write new Keypair into.';
   } else {
     text = 'huh?';
@@ -258,7 +258,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
       self._keypairPresent = result;
       self.logger.debug('keypairDirectory Form cb(): results [%o]', self._keypairPresent);
 
-      MicroModal.close('ziti-updb-modal-keypairDirectory');
+      MicroModal.close('zt-updb-modal-keypairDirectory');
       self.modalShown = false;
   
     });
@@ -266,7 +266,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
     MicroModal.init({
       onShow: modal => console.info(`${modal.id} is shown`), // [1]
       onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-      openTrigger: 'ziti-data-micromodal-trigger', // [3]
+      openTrigger: 'zt-data-micromodal-trigger', // [3]
       closeTrigger: 'data-custom-close', // [4]
       openClass: 'is-open', // [5]
       disableScroll: true, // [6]
@@ -276,7 +276,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
       debugMode: false // [10]
     });
   
-    MicroModal.show('ziti-updb-modal-keypairDirectory');
+    MicroModal.show('zt-updb-modal-keypairDirectory');
 
     self.modalShown = true;
   }
@@ -301,7 +301,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
     MicroModal.init({
       onShow: modal => console.info(`${modal.id} is shown`), // [1]
       onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-      openTrigger: 'ziti-data-micromodal-trigger', // [3]
+      openTrigger: 'zt-data-micromodal-trigger', // [3]
       closeTrigger: 'data-custom-close', // [4]
       openClass: 'is-open', // [5]
       disableScroll: true, // [6]
@@ -311,7 +311,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
       debugMode: false // [10]
     });
   
-    MicroModal.show('ziti-reloadingpage-modal');
+    MicroModal.show('zt-reloadingpage-modal');
   }
 }
 
@@ -325,7 +325,7 @@ ZitiUPDB.prototype.promptForCreds = async function() {
 ZitiUPDB.prototype.closeLoginForm = function() {
 
   if (this.modalShown) {
-    MicroModal.close('ziti-updb-modal');
+    MicroModal.close('zt-updb-modal');
     this.modalShown = false;
   }
 
@@ -417,14 +417,14 @@ ZitiUPDB.prototype.awaitLoginFormComplete = async function() {
 
     (function waitForKeypairDirectoryFormComplete() {
 
-      if (self._keypairPresent == zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILE_NOT_FOUND ) {
-        return resolve( zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILE_NOT_FOUND );
+      if (self._keypairPresent == ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILE_NOT_FOUND ) {
+        return resolve( ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILE_NOT_FOUND );
       }
-      if (self._keypairPresent == zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILE_NOT_FOUND ) {
-        return resolve( zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILE_NOT_FOUND );
+      if (self._keypairPresent == ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILE_NOT_FOUND ) {
+        return resolve( ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILE_NOT_FOUND );
       }
-      if (self._keypairPresent == zitiConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND ) {
-        return resolve( zitiConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND );
+      if (self._keypairPresent == ztConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND ) {
+        return resolve( ztConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND );
       }
 
       self.logger.trace('ZitiUPDB.awaitLoginFormComplete() _keypairPresent still not true');

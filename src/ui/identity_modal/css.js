@@ -282,7 +282,7 @@ exports.inject = () => {
 	  will-change: transform;
 	}  
   
-	.ziti-footer {
+	.zt-footer {
 	  font-family: 'Roboto', 'Noto', sans-serif;
 	  font-weight: 400;
 	  -webkit-font-smoothing: antialiased;

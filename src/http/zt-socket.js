@@ -34,7 +34,7 @@ class ZitiSocket extends EventEmitter {
         }
 
         /**
-         * This stream is where we'll put any data returned from a Ziti connection (see ziti_dial.data.call_back)
+         * This stream is where we'll put any data returned from a Ziti connection (see zt_dial.data.call_back)
          */
         this.readableZitiStream = new ReadableStream({
             start(controller) {
@@ -48,7 +48,7 @@ class ZitiSocket extends EventEmitter {
          * @private
          * @type {string}
          */
-        this.zitiConnection;
+        this.ztConnection;
 
 
         /**
@@ -61,18 +61,18 @@ class ZitiSocket extends EventEmitter {
 
 
     /**
-     * Make a connection to the specified Ziti 'service'.  We do this by invoking the ziti_dial() function in the Ziti NodeJS-SDK.
+     * Make a connection to the specified Ziti 'service'.  We do this by invoking the zt_dial() function in the Ziti NodeJS-SDK.
      * @param {*} service 
      */
-    ziti_dial(service) {
+    zt_dial(service) {
         
         const self = this;
         return new Promise((resolve) => {
-            if (self.zitiConnection) {
-                resolve(self.zitiConnection);
+            if (self.ztConnection) {
+                resolve(self.ztConnection);
             }
             else {
-                window.ziti.ziti_dial(
+                window.zt.zt_dial(
                     service,
 
                     self.isWebSocket,
@@ -89,7 +89,7 @@ class ZitiSocket extends EventEmitter {
                      * on_data callback
                      */
                     (data) => {
-                        conn.getCtx().logger.trace('on_data callback: conn: %s, data: \n%s', this.connAsHex(this.zitiConnection), data.toString());
+                        conn.getCtx().logger.trace('on_data callback: conn: %s, data: \n%s', this.connAsHex(this.ztConnection), data.toString());
                         this.readableZitiStreamController.enqueue(data);
                     },
                 );
@@ -98,12 +98,12 @@ class ZitiSocket extends EventEmitter {
     }
 
     /**
-     * Write data onto the underlying Ziti connection by invoking the ziti_write() function in the Ziti NodeJS-SDK.  The
+     * Write data onto the underlying Ziti connection by invoking the zt_write() function in the Ziti NodeJS-SDK.  The
      * NodeJS-SDK expects incoming data to be of type Buffer.
     */
-    ziti_write(conn, buffer) {
+    zt_write(conn, buffer) {
         return new Promise((resolve) => {
-            window.ziti.ziti_write(
+            window.zt.zt_write(
                 conn, buffer,
                 () => {
                     resolve();
@@ -120,14 +120,14 @@ class ZitiSocket extends EventEmitter {
         conn.getCtx().logger.trace("captureResponseData() <- conn: [%d], dataLen: [%o]", conn.getId(), data.byteLength);
         // conn.getCtx().logger.trace("captureResponseData() <- conn: [%d], data: [%o]", conn.getId(), data);
 
-        let zitiSocket = conn.getSocket();
+        let ztSocket = conn.getSocket();
 
-        conn.getCtx().logger.trace("captureResponseData() <- zitiSocket: [%o]", zitiSocket);
+        conn.getCtx().logger.trace("captureResponseData() <- ztSocket: [%o]", ztSocket);
 
         if (data.byteLength > 0) {
-            zitiSocket.emit('data', data);
+            ztSocket.emit('data', data);
         } else {
-            zitiSocket.emit('close', data);
+            ztSocket.emit('close', data);
         }
     }
 
@@ -137,12 +137,12 @@ class ZitiSocket extends EventEmitter {
     async connect(opts) {
 
         if (typeof opts.conn == 'object') {
-            this.zitiConnection = opts.conn;
+            this.ztConnection = opts.conn;
         }
         else if (typeof opts.serviceName == 'string') {
-            this.zitiConnection = ziti.newConnection(ziti._ctx);
-            await ziti.dial(this.zitiConnection, opts.serviceName);
-            this.zitiConnection.getCtx().logger.debug("ZitiSocket: connect: dial(%s) on conn[%d] now complete", opts.serviceName, this.zitiConnection.getId());
+            this.ztConnection = zt.newConnection(zt._ctx);
+            await zt.dial(this.ztConnection, opts.serviceName);
+            this.ztConnection.getCtx().logger.debug("ZitiSocket: connect: dial(%s) on conn[%d] now complete", opts.serviceName, this.ztConnection.getId());
         } else {
             throw new Error('no serviceName or conn was provided');
         }
@@ -150,10 +150,10 @@ class ZitiSocket extends EventEmitter {
         this._writable = true;
 
         // Prepare to capture response data from the request we are about to launch
-        this.zitiConnection.setDataCallback(this.captureResponseData);
-        this.zitiConnection.setSocket(this);
+        this.ztConnection.setDataCallback(this.captureResponseData);
+        this.ztConnection.setSocket(this);
 
-        this.emit('connect', this.zitiConnection);
+        this.emit('connect', this.ztConnection);
     }
      
 
@@ -177,7 +177,7 @@ class ZitiSocket extends EventEmitter {
         const self = this;
         return new Promise((resolve) => {
             (function waitForConnected() {
-                if (self.zitiConnection && (!isUndefined(self.zitiConnection.getChannel()))) return resolve(self.zitiConnection);
+                if (self.ztConnection && (!isUndefined(self.ztConnection.getChannel()))) return resolve(self.ztConnection);
                 setTimeout(waitForConnected, 10);
             })();
         });
@@ -209,13 +209,13 @@ class ZitiSocket extends EventEmitter {
             throw new Error('chunk type of [' + typeof chunk + '] is not a supported type');
         }
         if (buffer.length > 0) {
-            const conn = await this.getZitiConnection().catch((e) => conn.getCtx().logger.error('inside ziti-socket.js _write(), Error 1: ', e.message));
+            const conn = await this.getZitiConnection().catch((e) => conn.getCtx().logger.error('inside zt-socket.js _write(), Error 1: ', e.message));
 
             let ch = conn.getChannel();
 
             // logger.info('_write: conn: %s, length: %s, data: \n%s', this.connAsHex(conn), buffer.byteLength, buffer.toString());
 
-            // await this.ziti_write(conn, buffer).catch((e) => logger.error('_write(), Error 2: ', e.message));
+            // await this.zt_write(conn, buffer).catch((e) => logger.error('_write(), Error 2: ', e.message));
 
             // let response = await 
             ch.write(conn, buffer);
@@ -251,7 +251,7 @@ class ZitiSocket extends EventEmitter {
      */
     async destroy() {
         this._writable = false;
-        await ziti.close(this.zitiConnection);
+        await zt.close(this.ztConnection);
     }
     
     /**
@@ -259,7 +259,7 @@ class ZitiSocket extends EventEmitter {
      */
     async end(data, encoding, callback) {
         this._writable = false;
-        await ziti.close(this.zitiConnection);
+        await zt.close(this.ztConnection);
     }
 
     /**

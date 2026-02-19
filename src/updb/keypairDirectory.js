@@ -18,7 +18,7 @@ const isUndefined = require('lodash.isundefined');
 const isNull = require('lodash.isnull');
 const ZitiPKI = require('../pki/pki');
 const ls = require('../utils/localstorage');
-const zitiConstants = require('../constants');
+const ztConstants = require('../constants');
 
 /**
  *	Inject JS select change-handler for the Identity Modal.
@@ -26,7 +26,7 @@ const zitiConstants = require('../constants');
  */  
 exports.injectButtonHandler = (updb, source, cb) => {
 
-    let keypairDirectoryButton = document.getElementById("ziti-keypairDirectory-button");
+    let keypairDirectoryButton = document.getElementById("zt-keypairDirectory-button");
 
     keypairDirectoryButton.onclick = async function(e) {
 
@@ -46,25 +46,25 @@ exports.injectButtonHandler = (updb, source, cb) => {
 
       // Render the directory chooser, and obtain dir handle
       let directoryHandle = await window.showDirectoryPicker( {} );
-      ziti._ctx.logger.debug('got directoryHandle: ', directoryHandle);
+      zt._ctx.logger.debug('got directoryHandle: ', directoryHandle);
 
               
-      if ( source == zitiConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_FS ) {
+      if ( source == ztConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_FS ) {
 
 
-        let publicKeyfileHandle = await directoryHandle.getFileHandle(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILENAME, { create: false }).catch((err) => { ziti._ctx.logger.warn(err); });
-        ziti._ctx.logger.debug('publicKeyfileHandle: ', publicKeyfileHandle);
-        let privateKeyfileHandle = await directoryHandle.getFileHandle(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILENAME, { create: false }).catch((err) => { ziti._ctx.logger.warn(err); });
-        ziti._ctx.logger.debug('privateKeyfileHandle: ', privateKeyfileHandle);
+        let publicKeyfileHandle = await directoryHandle.getFileHandle(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILENAME, { create: false }).catch((err) => { zt._ctx.logger.warn(err); });
+        zt._ctx.logger.debug('publicKeyfileHandle: ', publicKeyfileHandle);
+        let privateKeyfileHandle = await directoryHandle.getFileHandle(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILENAME, { create: false }).catch((err) => { zt._ctx.logger.warn(err); });
+        zt._ctx.logger.debug('privateKeyfileHandle: ', privateKeyfileHandle);
 
         // If public key NOT present in chosen directory
         if ( isUndefined( publicKeyfileHandle ) ) {
-          cb( zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILE_NOT_FOUND );
+          cb( ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILE_NOT_FOUND );
           return;
         }
         // If private key NOT present in chosen directory
         if ( isUndefined( privateKeyfileHandle ) ) {
-          cb( zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILE_NOT_FOUND );
+          cb( ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILE_NOT_FOUND );
           return;
         }
 
@@ -73,29 +73,29 @@ exports.injectButtonHandler = (updb, source, cb) => {
         let publicKeyfile = await publicKeyfileHandle.getFile();
         let publicKeyfileContents = await publicKeyfile.arrayBuffer();
         publicKeyfileContents = ab2str(publicKeyfileContents);
-        await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY, publicKeyfileContents, new Date(8640000000000000));    
+        await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY, publicKeyfileContents, new Date(8640000000000000));    
 
         let privateKeyfile = await privateKeyfileHandle.getFile();
         let privateKeyfileContents = await privateKeyfile.arrayBuffer();
         privateKeyfileContents = ab2str(privateKeyfileContents);
-        await ls.setWithExpiry(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY, privateKeyfileContents, new Date(8640000000000000));    
+        await ls.setWithExpiry(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY, privateKeyfileContents, new Date(8640000000000000));    
 
-        cb( zitiConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND );
+        cb( ztConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND );
 
         return;
 
       }
 
-      else if ( source == zitiConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_IDB ) {
+      else if ( source == ztConstants.get().ZITI_IDENTITY_KEYPAIR_OBTAIN_FROM_IDB ) {
 
-        ziti._ctx.logger.debug('Must pull keypair from IndexedDb');
+        zt._ctx.logger.debug('Must pull keypair from IndexedDb');
 
         // Obtain the keypair from IndexedDb
-        let publicKey  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
-        let privateKey = await ls.get(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+        let publicKey  = await ls.get(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
+        let privateKey = await ls.get(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
 
-        ziti._ctx.logger.debug('publicKey: ', publicKey);
-        ziti._ctx.logger.debug('privateKey: ', privateKey);
+        zt._ctx.logger.debug('publicKey: ', publicKey);
+        zt._ctx.logger.debug('privateKey: ', privateKey);
 
         if (
           isNull( publicKey ) || isUndefined( publicKey ) ||
@@ -105,54 +105,54 @@ exports.injectButtonHandler = (updb, source, cb) => {
         }
 
         // Determine if the public key file is in the selected directory already
-        publicKeyfileHandle = await directoryHandle.getFileHandle(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILENAME, { create: true }).catch((err) => {
-          ziti._ctx.logger.info(err);
+        publicKeyfileHandle = await directoryHandle.getFileHandle(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILENAME, { create: true }).catch((err) => {
+          zt._ctx.logger.info(err);
         });
-        ziti._ctx.logger.debug('publicKeyfileHandle: ', publicKeyfileHandle);
+        zt._ctx.logger.debug('publicKeyfileHandle: ', publicKeyfileHandle);
         // Determine if the private key file is in the selected directory already
-        privateKeyfileHandle = await directoryHandle.getFileHandle(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILENAME, { create: true }).catch((err) => {
-          ziti._ctx.logger.info(err);
+        privateKeyfileHandle = await directoryHandle.getFileHandle(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILENAME, { create: true }).catch((err) => {
+          zt._ctx.logger.info(err);
         });
-        ziti._ctx.logger.debug('privateKeyfileHandle: ', privateKeyfileHandle);
+        zt._ctx.logger.debug('privateKeyfileHandle: ', privateKeyfileHandle);
 
         // Prepare to write the keypair files to disk
         let perms = await publicKeyfileHandle.queryPermission()
-        ziti._ctx.logger.debug('publicKeyfileHandle perms: ', perms);
+        zt._ctx.logger.debug('publicKeyfileHandle perms: ', perms);
 
         let publicKeyfileWritable = await publicKeyfileHandle.createWritable({ keepExistingData: false }).catch((err) => {
-          ziti._ctx.logger.info(err);
+          zt._ctx.logger.info(err);
         });
-        ziti._ctx.logger.debug('publicKeyfileWritable: ', publicKeyfileWritable);
+        zt._ctx.logger.debug('publicKeyfileWritable: ', publicKeyfileWritable);
 
         perms = await privateKeyfileHandle.queryPermission()
-        ziti._ctx.logger.debug('privateKeyfileHandle perms: ', perms);
+        zt._ctx.logger.debug('privateKeyfileHandle perms: ', perms);
 
         let privateKeyfileWritable = await privateKeyfileHandle.createWritable({ keepExistingData: false }).catch((err) => {
-          ziti._ctx.logger.info(err);
+          zt._ctx.logger.info(err);
         });
-        ziti._ctx.logger.debug('privateKeyfileWritable: ', privateKeyfileWritable);
+        zt._ctx.logger.debug('privateKeyfileWritable: ', privateKeyfileWritable);
 
         // If we don't have writability
         if ( isUndefined( publicKeyfileWritable ) && isUndefined( privateKeyfileWritable ) ) {
 
-          ziti._ctx.logger.info( 'Failed to get writable filehandles' );
+          zt._ctx.logger.info( 'Failed to get writable filehandles' );
 
           throw new Error('WTF');
         }
 
-        ziti._ctx.logger.info('doing publicKeyfileWritable.write');
+        zt._ctx.logger.info('doing publicKeyfileWritable.write');
         await publicKeyfileWritable.write( str2ab( publicKey ) );
-        ziti._ctx.logger.info('completed publicKeyfileWritable.write');
+        zt._ctx.logger.info('completed publicKeyfileWritable.write');
         await publicKeyfileWritable.close();
-        ziti._ctx.logger.info('completed publicKeyfileWritable.close');
+        zt._ctx.logger.info('completed publicKeyfileWritable.close');
 
-        ziti._ctx.logger.info('doing privateKeyfileWritable.write');
+        zt._ctx.logger.info('doing privateKeyfileWritable.write');
         await privateKeyfileWritable.write( str2ab( privateKey ) );
-        ziti._ctx.logger.info('completed privateKeyfileWritable.write');
+        zt._ctx.logger.info('completed privateKeyfileWritable.write');
         await privateKeyfileWritable.close();
-        ziti._ctx.logger.info('completed privateKeyfileWritable.close');
+        zt._ctx.logger.info('completed privateKeyfileWritable.close');
 
-        cb( zitiConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND );
+        cb( ztConstants.get().ZITI_IDENTITY_KEYPAIR_FOUND );
 
         return;
 
@@ -163,18 +163,18 @@ exports.injectButtonHandler = (updb, source, cb) => {
 
       
 
-      // ziti._ctx.logger.debug('Must pull keypair from IndexedDb');
+      // zt._ctx.logger.debug('Must pull keypair from IndexedDb');
 
       // // Do not proceed until we have generated a fresh keypair
       // let pki = new ZitiPKI(ZitiPKI.prototype);
-      // await pki.init( { ctx: ziti._ctx, logger: ziti._ctx.logger } );
+      // await pki.init( { ctx: zt._ctx, logger: zt._ctx.logger } );
       // let neededToGenerate = await pki.awaitKeyPairGenerationComplete( true ); // await completion of keypair calculation
-      // ziti._ctx.logger.debug('awaitKeyPairGenerationComplete returned: ', neededToGenerate);
+      // zt._ctx.logger.debug('awaitKeyPairGenerationComplete returned: ', neededToGenerate);
 
       // if (neededToGenerate) {
       //   // Trigger a page reload now that we have a fresh identity
       //   // let updb = new ZitiUPDB(ZitiUPDB.prototype);
-      //   // await updb.init( { ctx: ziti._ctx, logger: ziti._ctx.logger } );
+      //   // await updb.init( { ctx: zt._ctx, logger: zt._ctx.logger } );
       //   updb.relodingPage();
       //   setTimeout(function(){ 
       //     window.location.reload();
@@ -182,44 +182,44 @@ exports.injectButtonHandler = (updb, source, cb) => {
       // }
 
       // // Obtain the keypair from IndexedDb
-      // let publicKey  = await ls.get(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
-      // let privateKey = await ls.get(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
+      // let publicKey  = await ls.get(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY);
+      // let privateKey = await ls.get(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY);
 
-      // ziti._ctx.logger.debug('publicKey: ', publicKey);
-      // ziti._ctx.logger.debug('privateKey: ', privateKey);
+      // zt._ctx.logger.debug('publicKey: ', publicKey);
+      // zt._ctx.logger.debug('privateKey: ', privateKey);
 
       // // Determine if the public key file is in the selected directory already
-      // publicKeyfileHandle = await directoryHandle.getFileHandle(zitiConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILENAME, { create: true }).catch((err) => {
-      //   ziti._ctx.logger.info(err);
+      // publicKeyfileHandle = await directoryHandle.getFileHandle(ztConstants.get().ZITI_IDENTITY_PUBLIC_KEY_FILENAME, { create: true }).catch((err) => {
+      //   zt._ctx.logger.info(err);
       // });
-      // ziti._ctx.logger.debug('publicKeyfileHandle: ', publicKeyfileHandle);
+      // zt._ctx.logger.debug('publicKeyfileHandle: ', publicKeyfileHandle);
       // // Determine if the private key file is in the selected directory already
-      // privateKeyfileHandle = await directoryHandle.getFileHandle(zitiConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILENAME, { create: true }).catch((err) => {
-      //   ziti._ctx.logger.info(err);
+      // privateKeyfileHandle = await directoryHandle.getFileHandle(ztConstants.get().ZITI_IDENTITY_PRIVATE_KEY_FILENAME, { create: true }).catch((err) => {
+      //   zt._ctx.logger.info(err);
       // });
-      // ziti._ctx.logger.debug('privateKeyfileHandle: ', privateKeyfileHandle);
+      // zt._ctx.logger.debug('privateKeyfileHandle: ', privateKeyfileHandle);
 
       // // Prepare to write the keypair files to disk
       // let perms = await publicKeyfileHandle.queryPermission()
-      // ziti._ctx.logger.debug('publicKeyfileHandle perms: ', perms);
+      // zt._ctx.logger.debug('publicKeyfileHandle perms: ', perms);
 
       // let publicKeyfileWritable = await publicKeyfileHandle.createWritable({ keepExistingData: false }).catch((err) => {
-      //   ziti._ctx.logger.info(err);
+      //   zt._ctx.logger.info(err);
       // });
-      // ziti._ctx.logger.debug('publicKeyfileWritable: ', publicKeyfileWritable);
+      // zt._ctx.logger.debug('publicKeyfileWritable: ', publicKeyfileWritable);
 
       // perms = await privateKeyfileHandle.queryPermission()
-      // ziti._ctx.logger.debug('privateKeyfileHandle perms: ', perms);
+      // zt._ctx.logger.debug('privateKeyfileHandle perms: ', perms);
 
       // let privateKeyfileWritable = await privateKeyfileHandle.createWritable({ keepExistingData: false }).catch((err) => {
-      //   ziti._ctx.logger.info(err);
+      //   zt._ctx.logger.info(err);
       // });
-      // ziti._ctx.logger.debug('privateKeyfileWritable: ', privateKeyfileWritable);
+      // zt._ctx.logger.debug('privateKeyfileWritable: ', privateKeyfileWritable);
 
       // // If we don't have writability
       // if ( isUndefined( publicKeyfileWritable ) && isUndefined( privateKeyfileWritable ) ) {
 
-      //   ziti._ctx.logger.info( 'Failed to get writable filehandles' );
+      //   zt._ctx.logger.info( 'Failed to get writable filehandles' );
 
       //   // Close the loop on this UI gesture
       //   cb( );

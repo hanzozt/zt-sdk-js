@@ -23,7 +23,7 @@ const isNull = require('lodash.isnull');
  */  
 exports.setMessage = (errorMessage) => {
 
-  var el = document.getElementById("ziti-keypair-error");
+  var el = document.getElementById("zt-keypair-error");
   if (!isNull(el)) { 
     if (typeof errorMessage != "undefined") {
       el.textContent = errorMessage;
@@ -35,7 +35,7 @@ exports.setMessage = (errorMessage) => {
 
 exports.setProgress = (progressMessage) => {
 
-  var el = document.getElementById("ziti-keypair-progress");
+  var el = document.getElementById("zt-keypair-progress");
   if (!isNull(el)) {
     if (typeof progressMessage != "undefined") {
       el.textContent = progressMessage;

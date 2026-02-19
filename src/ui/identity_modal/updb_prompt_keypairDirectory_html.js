@@ -32,12 +32,12 @@ exports.inject = ( text ) => {
 
     htmlString = `
   
-        <div class="modal micromodal-slide" id="ziti-updb-modal-keypairDirectory" aria-hidden="true">
+        <div class="modal micromodal-slide" id="zt-updb-modal-keypairDirectory" aria-hidden="true">
             <div class="wrapper">
-                <form class="form-signin" name="zitikeypair" id="ziti-keypair-form">
+                <form class="form-signin" name="ztkeypair" id="zt-keypair-form">
                     <header class="modal__header">
                         <h2 class="modal__title" id="modal-1-title">
-                            <img src="https://ziti-logo.s3.amazonaws.com/ziti-logo_avatar.png" width=25 >
+                            <img src="https://zt-logo.s3.amazonaws.com/zt-logo_avatar.png" width=25 >
                             <span>
                                 Zero-Trust KeyPair Selection
                             </span>
@@ -46,22 +46,22 @@ exports.inject = ( text ) => {
 
                     <h2 class="form-signin-heading">${text}</h2>
                     <span style="padding-top: 5px;">&nbsp;</span>
-                    <button id="ziti-keypairDirectory-button" class="btn btn-lg btn-primary btn-block form-signin-button" type="submit">Select Folder</button>   
+                    <button id="zt-keypairDirectory-button" class="btn btn-lg btn-primary btn-block form-signin-button" type="submit">Select Folder</button>   
                 </form>
             </div>
 
             <div style="text-align: center;">
-                <span id="ziti-identity-progress" style="color: white; font-weight: 800"></span> 
+                <span id="zt-identity-progress" style="color: white; font-weight: 800"></span> 
             </div>
             <div style="text-align: center;">
-                <span id="ziti-identity-error" style="color: red; font-weight: 800"></span> 
+                <span id="zt-identity-error" style="color: red; font-weight: 800"></span> 
             </div>
             
             
             <footer class="modal__footer">
             </footer>
             
-            <p class="ziti-footer" >
+            <p class="zt-footer" >
                 To access this application, you must be enrolled in the Ziti network.
             </p>
         </div>

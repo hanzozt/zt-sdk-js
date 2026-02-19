@@ -32,7 +32,7 @@ let ZitiControllerClient = (function() {
 
     function ZitiControllerClient(options) {
         let domain = (typeof options === 'object') ? options.domain : options;
-        this.domain = domain ? domain : 'https://demo.ziti.dev/edge/v1';
+        this.domain = domain ? domain : 'https://demo.zt.dev/edge/v1';
         if (this.domain.length === 0) {
             throw new Error('Domain parameter must be specified as a string.');
         }

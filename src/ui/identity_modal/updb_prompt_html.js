@@ -32,12 +32,12 @@ exports.inject = () => {
 
     htmlString = `
   
-        <div class="modal micromodal-slide" id="ziti-updb-modal" aria-hidden="true">
+        <div class="modal micromodal-slide" id="zt-updb-modal" aria-hidden="true">
             <div class="wrapper">
-                <form class="form-signin" name="zitilogin" id="ziti-login-form">
+                <form class="form-signin" name="ztlogin" id="zt-login-form">
                     <header class="modal__header">
                         <h2 class="modal__title" id="modal-1-title">
-                            <img src="https://ziti-logo.s3.amazonaws.com/ziti-logo_avatar.png" width=25 >
+                            <img src="https://zt-logo.s3.amazonaws.com/zt-logo_avatar.png" width=25 >
                             <span>
                                 Ziti Network Authentication
                             </span>
@@ -45,25 +45,25 @@ exports.inject = () => {
                     </header>
 
                     <h2 class="form-signin-heading">Please Login</h2>
-                    <input id="ziti-login-username" type="text" class="form-control" name="username" placeholder="Ziti Username" required="do it 1" autofocus="" />
+                    <input id="zt-login-username" type="text" class="form-control" name="username" placeholder="Ziti Username" required="do it 1" autofocus="" />
                     <span style="padding-top: 5px;">&nbsp;</span>
-                    <input id="ziti-login-password" type="password" class="form-control" style="padding-top: 5px;" name="password" placeholder="Ziti Password" required="do it 2"/>      
-                    <button id="ziti-login-button" class="btn btn-lg btn-primary btn-block form-signin-button" type="submit">Authenticate</button>   
+                    <input id="zt-login-password" type="password" class="form-control" style="padding-top: 5px;" name="password" placeholder="Ziti Password" required="do it 2"/>      
+                    <button id="zt-login-button" class="btn btn-lg btn-primary btn-block form-signin-button" type="submit">Authenticate</button>   
                 </form>
             </div>
 
             <div style="text-align: center;">
-                <span id="ziti-identity-progress" style="color: white; font-weight: 800"></span> 
+                <span id="zt-identity-progress" style="color: white; font-weight: 800"></span> 
             </div>
             <div style="text-align: center;">
-                <span id="ziti-identity-error" style="color: red; font-weight: 800"></span> 
+                <span id="zt-identity-error" style="color: red; font-weight: 800"></span> 
             </div>
             
             
             <footer class="modal__footer">
             </footer>
             
-            <p class="ziti-footer" >
+            <p class="zt-footer" >
                 To access this application, you must be enrolled in the Ziti network.
             </p>
         </div>
