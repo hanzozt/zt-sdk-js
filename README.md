@@ -13,5 +13,5 @@ The Ziti SDK for JavaScript has been discontinued and will be replaced by a futu
 ## Recommendations
 If you are seeking alternatives or similar functionality, consider:
 
-- **[OpenZiti SDKs](https://github.com/openziti):** Explore other actively maintained SDKs within the OpenZiti ecosystem.
+- **[Hanzo ZT SDKs](https://github.com/hanzozt):** Explore other actively maintained SDKs within the Hanzo ZT ecosystem.
 

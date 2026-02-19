@@ -1,5 +1,5 @@
 {
-  "name": "@openziti/ziti-sdk-js",
+  "name": "@hanzozt/ziti-sdk-js",
   "version": "0.15.4",
   "description": "A JavaScript-based SDK for delivering secure browser-based web applications over a Ziti Network",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openziti/ziti-sdk-js.git"
+    "url": "git+https://github.com/hanzozt/ziti-sdk-js.git"
   },
   "keywords": [
     "ziti",
@@ -32,9 +32,9 @@
   "author": "NetFoundry",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/openziti/ziti-sdk-js/issues"
+    "url": "https://github.com/hanzozt/ziti-sdk-js/issues"
   },
-  "homepage": "https://github.com/openziti/ziti-sdk-js#readme",
+  "homepage": "https://github.com/hanzozt/ziti-sdk-js#readme",
   "lint-staged": {
     "linters": {
       "*.js": [

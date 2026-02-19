@@ -796,7 +796,7 @@ ZitiEnroller.prototype.generateCSR = function(binaryData, label) {
       value: 'NC'
     }, {
       name: 'organizationName',
-      value: 'OpenZiti'
+      value: 'Hanzo ZT'
     }
   ]);
 
